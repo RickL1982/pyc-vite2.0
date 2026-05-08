@@ -195,11 +195,25 @@ return list.sort((a, b) => SERVICE_SLOTS.indexOf(a.slot) - SERVICE_SLOTS.indexOf
             const getSupervisorName = (zId) => allServers.find(s => s.id.toString() === zoneSupervisors[zId]?.toString())?.name || "PENDIENTE";
             const getApoyoName = (zId) => allServers.find(s => s.id.toString() === zoneSupports[zId]?.toString())?.name || "PENDIENTE";
 
+            const getZoneColorClass = (zoneId) => {
+                if (zoneId === 'Z1') return 'zona-azul';
+                if (zoneId === 'Z2') return 'zona-violeta';
+                if (zoneId === 'Z3') return 'zona-naranja';
+                return 'zona-base';
+            };
+            
+            const getZoneBgClass = (zoneId) => {
+                if (zoneId === 'Z1') return 'zona-azul';
+                if (zoneId === 'Z2') return 'zona-violeta';
+                if (zoneId === 'Z3') return 'zona-naranja';
+                return 'zona-base';
+            };
+            
             const renderZoneMonitor = (z, i = 0) => (
                 <div key={z.id} className={`glass-panel-heavy rounded-[2rem] overflow-hidden print-break-inside-avoid ${i > 0 ? 'print-mt-8' : ''}`}>
-                    <div className="bg-black/30 backdrop-blur-md p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b-[6px] border-blue-600">
+                    <div className={`bg-black/30 backdrop-blur-md p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b-[6px] ${z.id === 'Z3' ? 'border-orange-500' : z.id === 'Z1' ? 'border-slate-600' : 'border-purple-400'}`}>
                         <div>
-                            <h2 className="text-3xl font-black text-white uppercase italic tracking-wider">{z.name}</h2>
+                            <h2 className={`text-3xl font-black uppercase italic tracking-wider ${z.id === 'Z3' ? 'text-orange-400' : 'text-white'}`}>{z.name}</h2>
                             <div className="flex flex-wrap gap-4 mt-5">
                                 <div className="bg-white/10 border border-white/10 px-5 py-3 rounded-2xl flex items-center gap-3 shadow-sm transition-all hover:bg-white/20">
                                     {ShieldCheck && <ShieldCheck size={20} className="text-blue-400" />}
@@ -232,22 +246,22 @@ return list.sort((a, b) => SERVICE_SLOTS.indexOf(a.slot) - SERVICE_SLOTS.indexOf
                         </div>
                     </div>
 
-                    <div className="flex overflow-x-auto pb-8 pt-4 gap-4 md:gap-6 custom-scrollbar px-4 md:px-8 snap-x whitespace-nowrap w-full">
+                    <div className="flex flex-col md:flex-row overflow-x-auto pb-8 pt-4 gap-4 md:gap-6 custom-scrollbar px-4 md:px-8 w-full">
                         {SERVICE_SLOTS.map(slot => {
                             const slotStyle = SLOT_STYLES[slot] || SLOT_STYLES['7:30'];
                             return (
-                            <div key={slot} className="w-[260px] md:w-[300px] flex-none flex flex-col gap-4 snap-center whitespace-normal">
+                            <div key={slot} className="w-full md:w-[300px] flex-none flex flex-col gap-4 whitespace-normal">
                                 <div className="flex items-center justify-between mb-3 px-2">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-3 h-3 rounded-full ${slotStyle.bg.replace('/5', '')} shadow-sm border border-black/5`}></div>
-                                        <span className="text-lg font-black text-slate-400 dark:text-slate-500 tracking-tight uppercase">{slot}</span>
+                                        <span className="text-lg font-black text-slate-400 dark:text-slate-500 tracking-tight uppercase">SERVICIO {slot}</span>
                                     </div>
                                     <span className="text-[11px] font-bold px-3 py-1 bg-slate-100 dark:bg-[#353A50] text-slate-500 dark:text-slate-300 rounded-full shadow-sm">
                                         {z.points.length}
                                     </span>
                                 </div>
 
-                                <div className="bg-white/60 dark:bg-[#2B2F42]/60 rounded-[2rem] p-4 flex flex-col gap-4 min-h-[500px] border border-slate-200/50 dark:border-white/5 shadow-[inset_0_4px_20px_rgba(0,0,0,0.02)]">
+                                <div className={`${getZoneBgClass(z.id)} rounded-[2rem] p-4 flex flex-col gap-4 min-h-[500px]`}>
                                     {z.points.map(p => {
                                         const srvId = distribution?.[z.id]?.[p.id]?.[slot];
                                         const srv = srvId ? allServers.find(s => s.id === srvId) : null;
