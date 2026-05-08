@@ -888,7 +888,7 @@ processImageFile(e.target.files[0], (dataUrl) => {
                         >
                             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
-                        <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center gap-2 overflow-x-auto whitespace-nowrap custom-scrollbar px-2 w-full p-2 md:p-0 glass-panel rounded-[2rem] absolute md:static top-12 md:top-0 left-0 right-0 z-40 bg-[#090C11] md:bg-transparent`}>
+                        <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center gap-2 overflow-x-auto whitespace-nowrap custom-scrollbar px-2 w-full p-2 md:p-0 glass-panel rounded-[2rem] absolute md:static top-12 md:top-0 left-0 right-0 z-40 bg-[#090C11]/95 md:bg-transparent`}>
                             {[
                                 { id: 'agenda', label: 'Mi Agenda', icon: LayoutGrid },
                                 ...(isScheduler ? [
@@ -898,8 +898,8 @@ processImageFile(e.target.files[0], (dataUrl) => {
                                 ] : []),
                                 { id: 'directory', label: 'Directorio', icon: Users }
                             ].map(tab => (
-                                <button key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }} className={`flex-1 min-w-[120px] py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all italic flex items-center justify-center gap-2 w-full md:w-auto ${activeTab === tab.id ? 'glass-button-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-                                    {tab.icon && <tab.icon size={16} />} <span>{tab.label}</span>
+                                <button key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }} className={`flex-1 min-w-[120px] py-4 rounded-[1.5rem] text-sm font-black uppercase tracking-[0.15em] transition-all italic flex items-center justify-center gap-2 w-full md:w-auto ${activeTab === tab.id ? 'glass-button-primary' : 'text-white hover:text-[#FFD300] hover:bg-white/10'}`}>
+                                    {tab.icon && <tab.icon size={18} />} <span>{tab.label}</span>
                                 </button>
                             ))}
                         </div>
