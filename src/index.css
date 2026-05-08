@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 :root {
+  /* Force Update: White Design 2026 */
   /* DARK MODE - CLEAN E-LEARNING DASHBOARD STYLE */
-  --app-bg: #212435;
-  --app-bg-gradient: #212435;
-  --panel-bg: #2B2F42;
-  --panel-bg-heavy: #2F3349;
-  --panel-border: rgba(255, 255, 255, 0.03);
-  --panel-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
-  --text-main: #FFFFFF;
-  --text-muted: #9CA3AF;
-  --accent-primary: #5C6BC0;
-  --accent-gradient: linear-gradient(135deg, #7986CB 0%, #5C6BC0 100%);
-  --input-bg: #212435;
-  --input-border: rgba(255, 255, 255, 0.05);
+  --app-bg: #FFFFFF;
+  --app-bg-gradient: #F8FAFC;
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --panel-bg-heavy: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(0, 0, 0, 0.05);
+  --panel-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --accent-primary: #3B82F6;
+  --accent-gradient: linear-gradient(135deg, #60A5FA 0%, #2563EB 100%);
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --input-border: rgba(203, 213, 225, 0.8);
 }
 
 body.light-mode {
@@ -157,3 +158,5 @@ body {
   .no-print { display: none !important; }
   body { background: white !important; color: black !important; }
 }
+
+/* Force Update: White Design 2026 */

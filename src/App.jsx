@@ -1367,3 +1367,5 @@ processImageFile(e.target.files[0], (dataUrl) => {
                 </div>
             );
         }
+
+        // Force Update: White Design 2026
