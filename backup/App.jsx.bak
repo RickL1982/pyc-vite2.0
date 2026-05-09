@@ -72,7 +72,6 @@ const SLOT_STYLES = {
 
             const [invertRotation, setInvertRotation] = useState(false);
             const [globalActiveDate, setGlobalActiveDate] = useState(() => new Date().toISOString().split('T')[0]);
-            const [activeZoneTab, setActiveZoneTab] = useState('Z1');
 
             const isScheduler = currentServerId === 100 || currentServerId === 103;
 
@@ -1097,20 +1096,8 @@ processImageFile(e.target.files[0], (dataUrl) => {
                                     </div>
                                 </div>
 
-                                <div className="md:hidden flex gap-2 overflow-x-auto pb-2">
-                                    {ZONES_DEFINITION.map(z => (
-                                        <button
-                                            key={z.id}
-                                            onClick={() => setActiveZoneTab(z.id)}
-                                            className={`flex-none px-4 py-2 rounded-xl font-black text-sm uppercase tracking-wider transition-all ${activeZoneTab === z.id ? 'bg-[#0077FF] text-white' : 'bg-white/10 text-slate-400 border border-white/10'}`}
-                                        >
-                                            {z.name.replace(' - AUDITORIO', '').replace(' - ', '\n')}
-                                        </button>
-                                    ))}
-                                </div>
-
                                 <div id="coordinator-pdf-content" className="space-y-12 pb-8">
-                                    {ZONES_DEFINITION.filter(z => window.innerWidth >= 768 || activeZoneTab === z.id).map((z, i) => renderZoneMonitor(z, i))}
+                                    {ZONES_DEFINITION.map((z, i) => renderZoneMonitor(z, i))}
                                 </div>
                             </div>
                         )}
