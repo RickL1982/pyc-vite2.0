@@ -604,7 +604,7 @@ processImageFile(e.target.files[0], (dataUrl) => {
                         if (!isStickySPK(p.id) && positionsAssigned[id].has(p.id)) return false;
 
                         if (p.exclusiveTo && s.id !== p.exclusiveTo) return false;
-                        if (!p.exclusiveTo && s.id === 21 && p.id !== 'Z3_1') return false; 
+                        if (!p.exclusiveTo && s.id === 21) return false;
 
                         const restrictedForNewbies = ['Z1_1', 'Z1_4', 'Z1_5', 'Z1_10'];
                         if (restrictedForNewbies.includes(p.id) && !hasSixMonths(s.serviceStartDate)) return false;
