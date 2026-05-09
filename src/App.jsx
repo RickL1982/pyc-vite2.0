@@ -75,6 +75,8 @@ const SLOT_STYLES = {
             const [activeZoneTab, setActiveZoneTab] = useState('Z1');
 
             const isScheduler = currentServerId === 100 || currentServerId === 103;
+            const isSupervisor = [100, 101, 102, 103, 104, 105].includes(currentServerId);
+            const canViewConsolidado = [100, 101, 102, 103, 104, 105].includes(currentServerId);
 
             const selectedMonth = parseInt(selectedDate.split('-')[1], 10);
             const isOddMonth = selectedMonth % 2 !== 0;
@@ -942,13 +944,18 @@ const zonesCount = {};
                         </button>
                         <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center gap-2 overflow-x-auto whitespace-nowrap custom-scrollbar px-2 w-full p-2 md:p-0 glass-panel rounded-[2rem] absolute md:static top-12 md:top-0 left-0 right-0 z-40 bg-[#090C11]/95 md:bg-transparent`}>
                             {[
-                                { id: 'agenda', label: 'Mi Agenda', icon: LayoutGrid },
                                 ...(isScheduler ? [
                                     { id: 'coordination', label: 'Programador', icon: Wand2 },
                                     { id: 'consolidado', label: 'Consolidado', icon: LayoutGrid },
-                                    { id: 'management', label: 'Gestión', icon: Settings }
-                                ] : []),
-                                { id: 'directory', label: 'Directorio', icon: Users }
+                                    { id: 'management', label: 'Gestión', icon: Settings },
+                                    { id: 'directory', label: 'Directorio', icon: Users }
+                                ] : canViewConsolidado ? [
+                                    { id: 'consolidado', label: 'Consolidado', icon: LayoutGrid },
+                                    { id: 'directory', label: 'Directorio', icon: Users }
+                                ] : [
+                                    { id: 'agenda', label: 'Mi Agenda', icon: LayoutGrid },
+                                    { id: 'directory', label: 'Directorio', icon: Users }
+                                ]),
                             ].map(tab => (
                                 <button key={tab.id} onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }} className={`flex-1 min-w-[120px] py-4 rounded-[1.5rem] text-sm font-black uppercase tracking-[0.15em] transition-all italic flex items-center justify-center gap-2 w-full md:w-auto ${activeTab === tab.id ? 'glass-button-primary' : 'text-white hover:text-[#FFD300] hover:bg-white/10'}`}>
                                     {tab.icon && <tab.icon size={18} />} <span>{tab.label}</span>
@@ -1122,7 +1129,7 @@ const zonesCount = {};
                             </div>
                         )}
 
-                        {activeTab === 'consolidado' && isScheduler && (
+                        {activeTab === 'consolidado' && canViewConsolidado && (
                             <div className="py-6 space-y-12 animate-in slide-in-from-bottom-6">
                                 <div className="no-print flex flex-col md:flex-row gap-4 items-center justify-between glass-panel p-6 rounded-[2rem]">
                                     <div className="flex items-center gap-4 w-full md:w-auto">
