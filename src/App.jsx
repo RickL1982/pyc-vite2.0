@@ -1104,7 +1104,7 @@ processImageFile(e.target.files[0], (dataUrl) => {
                                             onClick={() => setActiveZoneTab(z.id)}
                                             className={`flex-none px-4 py-2 rounded-xl font-black text-sm uppercase tracking-wider transition-all ${activeZoneTab === z.id ? 'bg-[#0077FF] text-white' : 'bg-white/10 text-slate-400 border border-white/10'}`}
                                         >
-                                            {z.name.replace(' - AUDITORIO', '').replace(' - ', '\n')}
+                                            {z.id.replace('Z', 'Zona ')}
                                         </button>
                                     ))}
                                 </div>
