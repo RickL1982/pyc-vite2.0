@@ -9,7 +9,7 @@ export const INITIAL_SERVERS = [
   { id: 102, name: "WILLIAM DAVID BENJUMEA LIZARAZO", group: "SUPERVISOR", isSupervisor: true, gender: 'M', phone: "3158980586", doc: "79797161", birthday: "1-oct", serviceStartDate: "2022-06-11", photoUrl: "" },
   { id: 103, name: "RICARDO ALBERTO LOZANO LOZANO", group: "SUPERVISOR", isSupervisor: true, gender: 'M', phone: "3044108903", doc: "11229765", birthday: "18-dic", serviceStartDate: "2022-06-11", photoUrl: "" },
   { id: 104, name: "GINNA DANIELA SOTO REYES", group: "SUPERVISOR", isSupervisor: true, gender: 'F', phone: "3212637787", doc: "1110520374", birthday: "13-feb", serviceStartDate: "2022-06-11", photoUrl: "" },
-  { id: 105, name: "EDNA MAYERLY SERRATO RUIZ", group: "SUPERVISOR", isSupervisor: true, gender: 'F', phone: "3132464606", doc: "52348159", birthday: "13-may", serviceStartDate: "2022-08-15", photoUrl: "" },
+  { id: 105, name: "EDNA MAYERLY SERRATO RUIZ", group: "3A", isSupervisor: true, gender: 'F', phone: "3132464606", doc: "52348159", birthday: "13-may", serviceStartDate: "2022-08-15", photoUrl: "" },
 
   // GRUPO 3A
   { id: 35, name: "ANGÉLICA MARÍA AREIZA SEGURA", group: "3A", isSupervisor: false, gender: 'F', phone: "3003401366", doc: "52393310", birthday: "2-feb", serviceStartDate: "2025-11-30", photoUrl: "" },

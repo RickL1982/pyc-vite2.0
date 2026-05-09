@@ -568,21 +568,31 @@ processImageFile(e.target.files[0], (dataUrl) => {
                 setIsAutoScheduling(true);
                 await new Promise(r => setTimeout(r, 800));
 
-                const newGrid = {};
-                ZONES_DEFINITION.forEach(z => {
-                    newGrid[z.id] = {};
-                    z.points.forEach(p => { 
-                        newGrid[z.id][p.id] = {}; 
-                        SERVICE_SLOTS.forEach(slot => {
-                            newGrid[z.id][p.id][slot] = null;
+                // Detectar si es misma fecha o nueva fecha
+                const lastScheduledDate = localStorage.getItem('pyc-last-date');
+                const isSameDate = lastScheduledDate === selectedDate;
+                
+                // Si es misma fecha, copiar distribución existente y solo llenar vacíos
+                // Si es nueva fecha, regenerar todo desde cero
+                const newGrid = isSameDate ? JSON.parse(JSON.stringify(distribution || {})) : {};
+                
+                if (!isSameDate) {
+                    ZONES_DEFINITION.forEach(z => {
+                        newGrid[z.id] = {};
+                        z.points.forEach(p => { 
+                            newGrid[z.id][p.id] = {}; 
+                            SERVICE_SLOTS.forEach(slot => {
+                                newGrid[z.id][p.id][slot] = null;
+                            });
                         });
                     });
-                });
+                    localStorage.setItem('pyc-last-date', selectedDate);
+                }
 
                 const shiftCount = {};
                 const slotsAssigned = {};
                 const positionsAssigned = {};
-                const zonesCount = {};
+const zonesCount = {};
 
                 attendingList.forEach(id => {
                     shiftCount[id] = 0;
@@ -604,7 +614,6 @@ processImageFile(e.target.files[0], (dataUrl) => {
                         if (!isStickySPK(p.id) && positionsAssigned[id].has(p.id)) return false;
 
                         if (p.exclusiveTo && s.id !== p.exclusiveTo) return false;
-                        if (!p.exclusiveTo && s.id === 21) return false;
 
                         const restrictedForNewbies = ['Z1_1', 'Z1_4', 'Z1_5', 'Z1_10'];
                         if (restrictedForNewbies.includes(p.id) && !hasSixMonths(s.serviceStartDate)) return false;
@@ -675,6 +684,20 @@ processImageFile(e.target.files[0], (dataUrl) => {
                                 if (cands.includes(p.exclusiveTo)) assign(p.exclusiveTo, z.id, p.id, slot);
                             });
                         }
+
+                        // b.23: Luz Helena - persistencia en PMU todos los servicios
+                        if (p.id === 'Z3_3') {
+                            const luzHelenaExists = attendingList.includes(21);
+                            if (luzHelenaExists) {
+                                SERVICE_SLOTS.forEach(slot => {
+                                    newGrid[z.id][p.id][slot] = 21;
+                                    shiftCount[21] = (shiftCount[21] || 0) + 1;
+                                    slotsAssigned[21].add(slot);
+                                    positionsAssigned[21].add(p.id);
+                                    zonesCount[21][z.id] = (zonesCount[21]?.[z.id] || 0) + 1;
+                                });
+                            }
+                        }
                     });
                 });
 
@@ -700,6 +723,20 @@ processImageFile(e.target.files[0], (dataUrl) => {
                             });
                         });
                     });
+                });
+
+                // b.18: MEC y baños - mujer siempre + hombre serv 2,3
+                const mecRefSlots = ['9:30', '11:30'];
+                mecRefSlots.forEach(slot => {
+                    const candsM = getCandidates({id: 'Z3_11'}, slot, 'Z3', {gender: 'M'}).filter(id => !newGrid['Z3']['Z3_11'][slot]);
+                    if (candsM.length > 0) assign(candsM[0], 'Z3', 'Z3_11', slot);
+                });
+
+                // b.21: Ingreso lobby - 2 personas serv 2,3
+                const lobbyRefSlots = ['9:30', '11:30'];
+                lobbyRefSlots.forEach(slot => {
+                    const candsRef = getCandidates({id: 'Z3_2'}, slot, 'Z3').filter(id => !newGrid['Z3']['Z3_2'][slot]);
+                    if (candsRef.length > 0) assign(candsRef[0], 'Z3', 'Z3_2', slot);
                 });
 
                 await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'schedules', selectedDate), { grid: newGrid }, { merge: true });
@@ -1031,9 +1068,15 @@ processImageFile(e.target.files[0], (dataUrl) => {
                         {activeTab === 'coordination' && isScheduler && (
                             <div className="py-6 space-y-8 animate-in slide-in-from-bottom-6">
                                 <div className="glass-panel-heavy p-8 rounded-[3rem] flex flex-col md:flex-row gap-6 items-center justify-between">
-                                    <div>
-                                        <h2 className="text-2xl font-black uppercase italic text-white leading-none">Panel de Programación</h2>
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase mt-2 tracking-widest italic">Selecciona quiénes sirven hoy: <span className="text-blue-400 font-black">{selectedDate}</span></p>
+                                    <div className="flex items-center gap-6">
+                                        <div>
+                                            <h2 className="text-2xl font-black uppercase italic text-white leading-none">Panel de Programación</h2>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase mt-2 tracking-widest italic">Selecciona quiénes sirven hoy:</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Calendar size={18} className="text-blue-400" />
+                                            <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="bg-white/10 dark:bg-white/5 border border-white/20 rounded-lg px-3 py-2 font-black text-white italic" />
+                                        </div>
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
                                         <button 
@@ -1054,8 +1097,8 @@ processImageFile(e.target.files[0], (dataUrl) => {
                                     {['3A', '3B'].map(grupo => (
                                         <div key={grupo} className="bg-white/90 dark:bg-[#1E293B]/60 backdrop-blur-xl dark:backdrop-blur-md border border-blue-900/20 dark:border-white/10 rounded-xl overflow-hidden">
                                             <div className="bg-blue-900/10 dark:bg-white/5 backdrop-blur-sm p-4 flex items-center justify-between border-b border-blue-900/20 dark:border-white/10">
-                                                <h3 className="font-black text-sm uppercase italic text-[#1a4467] dark:text-white">Grupo {grupo}</h3>
-                                                <button onClick={() => toggleGroupAttending(grupo)} className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg bg-[#1a4467]/10 dark:bg-[#FFD300]/20 border border-[#1a4467]/30 dark:border-[#FFD300]/30 text-[#1a4467] dark:text-[#FFD300] hover:bg-[#1a4467]/20 dark:hover:bg-[#FFD300]/30 transition-all active:scale-95">Alternar</button>
+                                                <h3 className="font-black text-sm uppercase italic text-[#1a4467] dark:text-white">Grupo {grupo === '3A' ? 'A' : 'B'}</h3>
+                                                <button onClick={() => toggleGroupAttending(grupo)} className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg bg-[#1a4467]/10 dark:bg-[#FFD300]/20 border border-[#1a4467]/30 dark:border-[#FFD300]/30 text-[#1a4467] dark:text-[#FFD300] hover:bg-[#1a4467]/20 dark:hover:bg-[#FFD300]/30 transition-all active:scale-95">Seleccionar todos</button>
                                             </div>
                                             <div className="p-3 grid gap-2 max-h-[450px] overflow-y-auto custom-scrollbar">
                                                 {allServers.filter(s => s.group === grupo && !s.isSupervisor && s.id !== 100 && s.id !== 103).map(srv => {
